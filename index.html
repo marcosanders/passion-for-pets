@@ -236,6 +236,26 @@
       transform: translateX(0);
     }
 
+    /* Dramatic slide-in service cards — entire card flies in from off-screen */
+    .service-card-left {
+      opacity: 0;
+      transform: translateX(-100%);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .service-card-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .service-card-right {
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .service-card-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     /* Stagger children in grids */
     .stagger-children > *:nth-child(1) { transition-delay: 0s; }
     .stagger-children > *:nth-child(2) { transition-delay: 0.1s; }
@@ -272,23 +292,252 @@
       }
     }
 
-    /* Button shimmer effect */
-    .btn-shimmer {
+    /* ---- Glassy 3D CTA Button ---- */
+    .btn-glow {
       position: relative;
-      overflow: hidden;
+      overflow: visible;
+      --glow-color: #d4a96e;
+      --glow-soft: rgba(212, 169, 110, 0.35);
+      --glow-faint: rgba(212, 169, 110, 0.12);
+      --sparkle-color: #e8cba5;
+      /* 3D glass depth — always visible */
+      background-image: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 50%, rgba(0,0,0,0.06) 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.25),
+        inset 0 -1px 2px rgba(0,0,0,0.08),
+        0 2px 4px rgba(0,0,0,0.08),
+        0 4px 12px rgba(0,0,0,0.06) !important;
+      transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.35s ease;
     }
-    .btn-shimmer::before {
+
+    /* Glass highlight strip at top */
+    .btn-glow::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s ease;
+      top: 1px;
+      left: 10%;
+      right: 10%;
+      height: 40%;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+      opacity: 1;
+      transition: opacity 0.3s ease;
     }
-    .btn-shimmer:hover::before {
-      left: 100%;
+
+    /* Hover: lift + warm glow aura */
+    .btn-glow:hover {
+      transform: translateY(-2px);
+      border-color: var(--glow-color) !important;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.3),
+        inset 0 -1px 2px rgba(0,0,0,0.06),
+        0 4px 15px var(--glow-soft),
+        0 8px 30px var(--glow-faint),
+        0 2px 6px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Active press — sink in */
+    .btn-glow:active {
+      transform: translateY(0px);
+      box-shadow:
+        inset 0 2px 4px rgba(0,0,0,0.12),
+        inset 0 1px 1px rgba(255,255,255,0.1),
+        0 1px 4px var(--glow-soft) !important;
+    }
+
+    /* Always-visible sparkle dots floating around the button */
+    .btn-sparkles {
+      position: absolute;
+      inset: -16px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .btn-sparkle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: sparkle-orbit 3.5s ease-in-out infinite;
+    }
+    /* 8 sparkles positioned around the button edges and outside */
+    .btn-sparkle:nth-child(1) {
+      width: 4px; height: 4px;
+      background: #e8cba5;
+      box-shadow: 0 0 6px #e8cba5, 0 0 10px rgba(232,203,165,0.4);
+      top: -6px; left: 20%;
+      animation-delay: 0s;
+      animation-duration: 3s;
+    }
+    .btn-sparkle:nth-child(2) {
+      width: 3px; height: 3px;
+      background: #d4a96e;
+      box-shadow: 0 0 5px #d4a96e, 0 0 8px rgba(212,169,110,0.4);
+      top: 30%; right: -8px;
+      animation-delay: 0.5s;
+      animation-duration: 3.8s;
+    }
+    .btn-sparkle:nth-child(3) {
+      width: 3px; height: 3px;
+      background: #f5e6d3;
+      box-shadow: 0 0 5px #f5e6d3, 0 0 8px rgba(245,230,211,0.4);
+      bottom: -4px; left: 55%;
+      animation-delay: 1.1s;
+      animation-duration: 3.2s;
+    }
+    .btn-sparkle:nth-child(4) {
+      width: 5px; height: 5px;
+      background: #d4a96e;
+      box-shadow: 0 0 8px #d4a96e, 0 0 14px rgba(212,169,110,0.3);
+      top: 50%; left: -10px;
+      animation-delay: 1.6s;
+      animation-duration: 4s;
+    }
+    .btn-sparkle:nth-child(5) {
+      width: 3px; height: 3px;
+      background: #c8956c;
+      box-shadow: 0 0 5px #c8956c, 0 0 8px rgba(200,149,108,0.4);
+      top: -8px; right: 25%;
+      animation-delay: 2.1s;
+      animation-duration: 3.4s;
+    }
+    .btn-sparkle:nth-child(6) {
+      width: 4px; height: 4px;
+      background: #e8cba5;
+      box-shadow: 0 0 6px #e8cba5, 0 0 10px rgba(232,203,165,0.3);
+      bottom: -6px; right: 15%;
+      animation-delay: 0.8s;
+      animation-duration: 3.6s;
+    }
+    .btn-sparkle:nth-child(7) {
+      width: 2px; height: 2px;
+      background: #f5e6d3;
+      box-shadow: 0 0 4px #f5e6d3;
+      top: 20%; left: 10%;
+      animation-delay: 2.5s;
+      animation-duration: 2.8s;
+    }
+    .btn-sparkle:nth-child(8) {
+      width: 3px; height: 3px;
+      background: #d4a96e;
+      box-shadow: 0 0 5px #d4a96e, 0 0 8px rgba(212,169,110,0.3);
+      bottom: 20%; right: -6px;
+      animation-delay: 1.3s;
+      animation-duration: 3.1s;
+    }
+
+    @keyframes sparkle-orbit {
+      0%, 100% {
+        opacity: 0;
+        transform: scale(0.3) translateY(0px);
+      }
+      15% {
+        opacity: 0.9;
+        transform: scale(1) translateY(-3px);
+      }
+      50% {
+        opacity: 0.6;
+        transform: scale(0.8) translateY(-8px);
+      }
+      85% {
+        opacity: 0.3;
+        transform: scale(0.5) translateY(-4px);
+      }
+    }
+
+    /* Sparkles intensify on hover */
+    .btn-glow:hover .btn-sparkle {
+      animation-duration: 1.8s !important;
+    }
+
+    /* Dark variant sparkles */
+    .btn-glow-dark .btn-sparkle:nth-child(1),
+    .btn-glow-dark .btn-sparkle:nth-child(4),
+    .btn-glow-dark .btn-sparkle:nth-child(8) {
+      background: #85b8cb;
+      box-shadow: 0 0 6px #85b8cb, 0 0 10px rgba(133,184,203,0.4);
+    }
+    .btn-glow-dark .btn-sparkle:nth-child(2),
+    .btn-glow-dark .btn-sparkle:nth-child(6) {
+      background: #b5d5e1;
+      box-shadow: 0 0 5px #b5d5e1, 0 0 8px rgba(181,213,225,0.4);
+    }
+    .btn-glow-dark .btn-sparkle:nth-child(3),
+    .btn-glow-dark .btn-sparkle:nth-child(5),
+    .btn-glow-dark .btn-sparkle:nth-child(7) {
+      background: #daeaf0;
+      box-shadow: 0 0 5px #daeaf0, 0 0 8px rgba(218,234,240,0.4);
+    }
+
+    /* Dark variant for buttons on dark backgrounds */
+    .btn-glow-dark {
+      --glow-color: #85b8cb;
+      --glow-soft: rgba(133, 184, 203, 0.35);
+      --glow-faint: rgba(133, 184, 203, 0.12);
+      --sparkle-color: #b5d5e1;
+    }
+
+    /* ---- Add-on card staggered reveal ---- */
+    .addon-card {
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+      transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+      transition-delay: var(--addon-delay, 0s);
+    }
+    .addon-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .addon-card:hover {
+      box-shadow: 0 8px 30px rgba(74,134,153,0.2), 0 2px 8px rgba(0,0,0,0.08);
+      transform: translateY(-4px) scale(1.02);
+    }
+
+    /* ---- Review Carousel ---- */
+    .review-carousel-track {
+      overflow: hidden;
+      width: 100%;
+      -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    }
+    .review-carousel-inner {
+      display: flex;
+      gap: 1.25rem;
+      width: max-content;
+      animation: review-scroll-left 35s linear infinite;
+    }
+    .review-carousel-track[data-direction="right"] .review-carousel-inner {
+      animation-name: review-scroll-right;
+    }
+    .review-card {
+      flex-shrink: 0;
+      width: 320px;
+      min-height: 200px;
+      background: white;
+      border-radius: 1rem;
+      padding: 1.25rem;
+      border: 1px solid rgba(218,234,240,0.4);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .review-card:hover {
+      transform: scale(1.03) rotate(0.5deg);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    @keyframes review-scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes review-scroll-right {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+    /* Pause on hover */
+    .review-carousel-track:hover .review-carousel-inner {
+      animation-play-state: paused;
     }
 
     /* Paw print walking trail pattern — staggered like actual steps */
@@ -386,7 +635,7 @@
       font-weight: 500;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: #9dbda7;
+      color: #d4a96e;
       margin-top: 1.75rem;
     }
     @media (max-width: 640px) {
@@ -496,7 +745,7 @@
           <a href="#about" class="text-gray-600 hover:text-primary-700 transition-colors text-sm font-medium">About</a>
           <a href="#reviews" class="text-gray-600 hover:text-primary-700 transition-colors text-sm font-medium">Reviews</a>
           <a href="#contact" class="text-gray-600 hover:text-primary-700 transition-colors text-sm font-medium">Contact</a>
-          <a href="tel:+14809261424" class="bg-gold-300 hover:bg-gold-200 text-primary-900 px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+          <a href="tel:+14809261424" class="btn-glow bg-gold-300 hover:bg-gold-200 text-primary-900 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md border border-gold-200/30">
             <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
             (480) 926-1424
           </a>
@@ -517,7 +766,7 @@
           <a href="#about" class="mobile-link px-4 py-3 text-gray-600 hover:bg-warm-100 rounded-lg transition-colors">About</a>
           <a href="#reviews" class="mobile-link px-4 py-3 text-gray-600 hover:bg-warm-100 rounded-lg transition-colors">Reviews</a>
           <a href="#contact" class="mobile-link px-4 py-3 text-gray-600 hover:bg-warm-100 rounded-lg transition-colors">Contact</a>
-          <a href="tel:+14809261424" class="mx-4 mt-2 bg-gold-300 text-primary-900 text-center py-3 rounded-full font-semibold shadow-md">
+          <a href="tel:+14809261424" class="btn-glow mx-4 mt-2 bg-gold-300 text-primary-900 text-center py-3 rounded-lg font-semibold shadow-md border border-gold-200/30">
             <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
             Call (480) 926-1424
           </a>
@@ -536,7 +785,7 @@
     <div class="absolute inset-0">
       <img
         src="images/hero-groomer-working.jpg"
-        alt="Professional groomer styling a dog at A Passion For Pets grooming salon in Gilbert, AZ"
+        alt="Professional dog groomer styling a Yorkshire Terrier with scissors at A Passion For Pets grooming salon in Gilbert AZ"
         class="w-full h-full object-cover photo-warm"
         loading="eager"
       >
@@ -566,7 +815,8 @@
 
         <!-- CTA buttons -->
         <div class="hero-animate hero-delay-4 flex flex-col sm:flex-row items-start gap-4">
-          <a href="tel:+14809261424" class="btn-shimmer group inline-flex items-center gap-2.5 bg-gold-300 hover:bg-gold-200 text-primary-900 px-8 py-4 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+          <a href="tel:+14809261424" class="btn-glow group inline-flex items-center gap-2.5 bg-gold-300 hover:bg-gold-200 text-primary-900 px-8 py-4 rounded-lg font-semibold text-sm tracking-wide transition-all duration-400 shadow-lg border border-gold-200/30">
+            <div class="btn-sparkles"><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span></div>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
             Call (480) 926-1424
           </a>
@@ -614,35 +864,35 @@
     <div class="marquee-track">
       <div class="flex items-center gap-16 px-8 text-sm font-semibold text-gray-800 whitespace-nowrap tracking-wide uppercase">
         <span class="flex items-center gap-2"><span class="text-yellow-500">★★★★★</span> 4.7 Stars</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>177+ Happy Pet Parents</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>Est. 2007</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>Hand Dried Only</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>No Cage Drying</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>Dogs & Cats Welcome</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>A+ BBB Rating</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
       </div>
       <div class="flex items-center gap-16 px-8 text-sm font-semibold text-gray-800 whitespace-nowrap tracking-wide uppercase">
         <span class="flex items-center gap-2"><span class="text-yellow-500">★★★★★</span> 4.7 Stars</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>177+ Happy Pet Parents</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>Est. 2007</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>Hand Dried Only</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>No Cage Drying</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>Dogs & Cats Welcome</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
         <span>A+ BBB Rating</span>
-        <span class="text-primary-300">—</span>
+        <span class="text-primary-300">·</span>
       </div>
     </div>
   </div>
@@ -652,7 +902,37 @@
   <!-- SERVICES SECTION -->
   <!-- What they offer — key for SEO and conversions -->
   <!-- ============================================ -->
-  <section id="services" class="bg-gradient-to-b from-warm-50 via-white to-warm-50 py-16 sm:py-24 relative pb-24 sm:pb-32 overflow-hidden">
+  <!-- Services Header — Dark gradient banner -->
+  <div id="services" class="relative overflow-hidden bg-gradient-to-b from-primary-900 via-primary-800 to-primary-700">
+    <!-- Subtle texture -->
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('images/paw-walking-pattern.svg'); background-size: 400px;"></div>
+    <div class="gradient-orb bg-gold-300 w-80 h-80 -top-40 right-10 absolute opacity-[0.08]"></div>
+    <div class="gradient-orb bg-primary-400 w-60 h-60 bottom-0 -left-20 absolute opacity-[0.1]"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 pt-16 sm:pt-24 pb-20 sm:pb-28">
+      <div class="text-center fade-in">
+        <span class="text-gold-300 font-body font-semibold text-sm uppercase tracking-[0.2em]">Our Services</span>
+        <div class="w-12 h-0.5 bg-gold-300/60 mx-auto mt-3"></div>
+        <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-4 mb-4 tracking-tight">Everything Your <em class="font-script not-italic text-gold-200">Pet</em> Needs</h2>
+        <p class="text-primary-200 max-w-2xl mx-auto text-lg">From a simple bath to a full breed-specific styling, we keep your furry friend looking and feeling their best. Dogs and cats welcome!</p>
+        <!-- No Cage Drying Badge -->
+        <div class="inline-flex items-center gap-2 mt-6 bg-white/10 backdrop-blur-sm text-gold-200 px-5 py-2.5 rounded-lg text-sm font-semibold border border-gold-300/20">
+          <svg class="w-5 h-5 shrink-0 text-gold-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          100% Hand Drying - No Cage or Kennel Drying, Ever
+        </div>
+      </div>
+    </div>
+
+    <!-- Curved bottom edge that transitions to warm background -->
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1200 80" preserveAspectRatio="none" class="w-full h-12 sm:h-16">
+        <path d="M0,40 C300,80 600,0 900,50 C1050,70 1150,20 1200,40 L1200,80 L0,80 Z" fill="#fdfaf6"></path>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Services Cards Area — Light background -->
+  <section class="bg-gradient-to-b from-warm-50 via-white to-warm-50 relative pb-24 sm:pb-32 overflow-hidden pt-4 sm:pt-8">
     <!-- Decorative gradient orbs -->
     <div class="gradient-orb bg-primary-300 w-96 h-96 -top-20 -right-20 absolute"></div>
     <div class="gradient-orb bg-accent-300 w-72 h-72 bottom-40 -left-20 absolute"></div>
@@ -660,101 +940,144 @@
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
 
-      <!-- Section Header -->
-      <div class="text-center mb-12 sm:mb-16 fade-in">
-        <span class="text-gold-400 font-body font-semibold text-sm uppercase tracking-[0.2em]">Our Services</span>
-        <div class="section-accent mt-3"></div>
-        <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mt-2 mb-4 tracking-tight">Everything Your <em class="font-script not-italic">Pet</em> Needs</h2>
-        <p class="text-gray-600 max-w-2xl mx-auto text-lg">From a simple bath to a full breed-specific styling, we keep your furry friend looking and feeling their best. Dogs and cats welcome!</p>
-        <!-- No Cage Drying Badge -->
-        <div class="inline-flex items-center gap-2 mt-4 bg-accent-100 text-accent-700 px-5 py-2 rounded-full text-sm font-semibold">
-          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          100% Hand Drying — No Cage or Kennel Drying, Ever
-        </div>
-      </div>
-
       <!-- ========== MAIN SERVICES — Editorial photo rows ========== -->
-      <div class="space-y-8 sm:space-y-12">
+      <div class="space-y-8 sm:space-y-12 overflow-hidden">
 
         <!-- Full Grooming — photo left, text right -->
-        <div class="reveal grid lg:grid-cols-2 gap-6 lg:gap-10 items-center bg-white rounded-2xl shadow-md overflow-hidden group">
-          <div class="aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden">
-            <img src="images/service-full-grooming.jpg?v=4" alt="Dog getting a full professional grooming session at A Passion For Pets" class="w-full h-full object-cover photo-warm transition-transform duration-[8s] group-hover:scale-105" loading="lazy">
+        <div class="service-card-wrapper">
+        <div class="service-card-left grid lg:grid-cols-2 gap-0 items-center bg-warm-50 rounded-2xl shadow-lg shadow-primary-900/8 overflow-hidden group border border-warm-200/50 lg:border-l-4 lg:border-l-gold-300">
+          <div class="aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden relative">
+            <img src="images/service-full-grooming.jpg?v=4" alt="Small dog getting a full professional grooming haircut and styling at A Passion For Pets in Gilbert AZ" class="w-full h-full object-cover photo-warm transition-transform duration-[8s] group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent to-warm-50/20 lg:block hidden"></div>
           </div>
-          <div class="p-6 sm:p-8 lg:pr-10">
-            <span class="text-gold-400 font-body text-xs font-semibold uppercase tracking-[0.2em]">Most Popular</span>
+          <div class="p-6 sm:p-8 lg:px-10">
+            <span class="inline-flex items-center gap-1.5 text-gold-400 font-body text-xs font-semibold uppercase tracking-[0.2em] bg-gold-100/60 px-3 py-1 rounded-md">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              Most Popular
+            </span>
             <h3 class="font-heading text-2xl sm:text-3xl font-bold text-gray-900 mt-2 mb-4 tracking-tight">Full Grooming</h3>
-            <p class="text-gray-600 leading-relaxed mb-5">Your pup walks out looking and smelling like a brand new dog. Our groomers tailor every cut to your pet's breed, coat type, and your preferences.</p>
+            <p class="text-gray-600 leading-relaxed mb-3">Your pup walks out looking and smelling like a brand new dog. Our groomers tailor every cut to your pet's breed, coat type, and your personal preferences, whether you want a classic breed-standard clip or a custom teddy bear trim.</p>
+            <p class="text-gray-600 leading-relaxed mb-5">Each full groom starts with a warm bath using premium shampoos matched to your dog's skin and coat needs, followed by hand blow-drying (never cage drying), a precise haircut, ear cleaning, nail trimming, and a spritz of finishing cologne. We also check for skin irritations, lumps, or tangles so you stay informed about your pet's health between vet visits. Most sessions take 2–3 hours depending on breed and coat condition.</p>
+            <p class="text-sm font-semibold text-primary-700 mb-4">Starting at $65 · Varies by breed & coat</p>
             <ul class="space-y-2 text-gray-500 text-sm">
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Bath with premium shampoo & conditioner</li>
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Breed-specific haircut & styling</li>
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Hand blow-dry (never cage dried)</li>
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Ear cleaning, nail trim & finishing touches</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Skin & coat health check</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Finishing cologne & bandana</li>
             </ul>
           </div>
         </div>
+        </div>
 
         <!-- Bath & Brush — text left, photo right -->
-        <div class="reveal grid lg:grid-cols-2 gap-6 lg:gap-10 items-center bg-white rounded-2xl shadow-md overflow-hidden group">
-          <div class="p-6 sm:p-8 lg:pl-10 order-2 lg:order-1">
+        <div class="service-card-wrapper">
+        <div class="service-card-right grid lg:grid-cols-2 gap-0 items-center bg-warm-50 rounded-2xl shadow-lg shadow-primary-900/8 overflow-hidden group border border-warm-200/50 lg:border-r-4 lg:border-r-primary-400">
+          <div class="p-6 sm:p-8 lg:px-10 order-2 lg:order-1">
             <span class="text-primary-400 font-body text-xs font-semibold uppercase tracking-[0.2em]">Between Grooms</span>
             <h3 class="font-heading text-2xl sm:text-3xl font-bold text-gray-900 mt-2 mb-4 tracking-tight">Bath & Brush</h3>
-            <p class="text-gray-600 leading-relaxed mb-5">Perfect for keeping your pet fresh and clean between full grooming appointments. A thorough bath, blow-dry, and brush-out that leaves them soft and shiny.</p>
+            <p class="text-gray-600 leading-relaxed mb-3">Perfect for keeping your pet fresh and clean between full grooming appointments. A bath and brush is ideal for short-coated breeds that don't need a haircut, or for any dog that just needs a reset after a muddy week at the park.</p>
+            <p class="text-gray-600 leading-relaxed mb-5">We start with a deep-cleaning bath using hypoallergenic shampoo suited to your dog's skin type, followed by a full hand blow-dry and thorough brush-out to remove loose fur and prevent matting. Every bath and brush also includes ear cleaning, nail trimming, and a light sanitary trim around the paws and face. It's the fastest way to get your dog looking and smelling great without a full haircut. Most visits take about an hour.</p>
+            <p class="text-sm font-semibold text-primary-700 mb-4">Starting at $40 · Varies by breed & coat</p>
             <ul class="space-y-2 text-gray-500 text-sm">
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-primary-400 rounded-full shrink-0"></span>Hypoallergenic shampoo bath</li>
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-primary-400 rounded-full shrink-0"></span>Hand blow-dry & thorough brushing</li>
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-primary-400 rounded-full shrink-0"></span>Ear cleaning & nail trim included</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-primary-400 rounded-full shrink-0"></span>Light sanitary trim (paws & face)</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-primary-400 rounded-full shrink-0"></span>De-shedding for heavy shedders</li>
             </ul>
           </div>
-          <div class="aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden order-1 lg:order-2">
-            <img src="images/service-bath-brush.jpg?v=2" alt="Dog enjoying a bath and brush session at A Passion For Pets salon" class="w-full h-full object-cover photo-warm transition-transform duration-[8s] group-hover:scale-105" loading="lazy">
+          <div class="aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden order-1 lg:order-2 relative">
+            <img src="images/service-bath-brush.jpg?v=2" alt="Dog enjoying a professional bath and brush grooming session at A Passion For Pets salon in Gilbert AZ" class="w-full h-full object-cover photo-warm transition-transform duration-[8s] group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-l from-transparent to-warm-50/20 lg:block hidden"></div>
           </div>
+        </div>
         </div>
 
         <!-- Specialty Treatments — photo left, text right -->
-        <div class="reveal grid lg:grid-cols-2 gap-6 lg:gap-10 items-center bg-white rounded-2xl shadow-md overflow-hidden group">
-          <div class="aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden">
-            <img src="images/service-specialty.jpg?v=4" alt="Dog receiving specialty spa treatment at A Passion For Pets" class="w-full h-full object-cover photo-warm transition-transform duration-[8s] group-hover:scale-105" loading="lazy">
+        <div class="service-card-wrapper">
+        <div class="service-card-left grid lg:grid-cols-2 gap-0 items-center bg-warm-50 rounded-2xl shadow-lg shadow-primary-900/8 overflow-hidden group border border-warm-200/50 lg:border-l-4 lg:border-l-gold-300">
+          <div class="aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden relative">
+            <img src="images/service-specialty.jpg?v=4" alt="Dog receiving a specialty de-shedding and skin treatment at A Passion For Pets grooming salon in Gilbert AZ" class="w-full h-full object-cover photo-warm transition-transform duration-[8s] group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent to-warm-50/20 lg:block hidden"></div>
           </div>
-          <div class="p-6 sm:p-8 lg:pr-10">
+          <div class="p-6 sm:p-8 lg:px-10">
             <span class="text-gold-400 font-body text-xs font-semibold uppercase tracking-[0.2em]">Premium Care</span>
             <h3 class="font-heading text-2xl sm:text-3xl font-bold text-gray-900 mt-2 mb-4 tracking-tight">Specialty Treatments</h3>
-            <p class="text-gray-600 leading-relaxed mb-5">Targeted treatments for pets with sensitive skin, heavy shedding, or coats that need extra love. Ask us what's right for your pet.</p>
+            <p class="text-gray-600 leading-relaxed mb-3">Targeted treatments for pets with sensitive skin, allergies, heavy shedding, or coats that need extra love. Whether your dog is dealing with dry, flaky skin or a thick double coat that won't stop shedding, we have solutions that go beyond a standard bath.</p>
+            <p class="text-gray-600 leading-relaxed mb-5">Our oatmeal and medicated baths soothe irritated skin and help manage conditions like hot spots and dermatitis. Deep conditioning treatments restore moisture and shine to brittle or damaged coats. For heavy shedders like Huskies, German Shepherds, and Golden Retrievers, our de-shedding treatment removes loose undercoat and reduces shedding at home by up to 80%. We also offer de-matting for dogs with tangled or neglected coats, done slowly and gently to keep your pet comfortable throughout.</p>
+            <p class="text-sm font-semibold text-primary-700 mb-4">Starting at $20 add-on · Standalone from $55</p>
             <ul class="space-y-2 text-gray-500 text-sm">
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Oatmeal & medicated baths</li>
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Deep conditioning treatments</li>
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>De-shedding & de-matting services</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Hot spot & sensitive skin relief</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Flea & tick treatment baths</li>
             </ul>
           </div>
         </div>
+        </div>
       </div>
 
-      <!-- ========== ADD-ON SERVICES — Clean text cards, no icons ========== -->
-      <div class="mt-10 sm:mt-14 fade-in">
-        <p class="text-center text-gold-400 font-body text-xs font-semibold uppercase tracking-[0.2em] mb-6">Add-On Services</p>
+      <!-- ========== ADD-ON SERVICES — Gold/warm themed cards ========== -->
+      <div class="mt-14 sm:mt-20">
+        <!-- Divider -->
+        <div class="flex items-center gap-4 mb-8 fade-in">
+          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gold-300/40 to-transparent"></div>
+          <span class="text-gold-400 font-body text-xs font-semibold uppercase tracking-[0.2em]">Add-On Services</span>
+          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gold-300/40 to-transparent"></div>
+        </div>
         <div class="grid sm:grid-cols-3 gap-5">
-          <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-warm-200/60 hover:shadow-md hover:-translate-y-0.5 transition-all">
-            <h3 class="font-heading text-lg font-bold text-gray-900 mb-2">Nail Care</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Nail trimming and grinding to keep your pet comfortable and healthy. Quick, gentle, and stress-free.</p>
+          <div class="addon-card bg-primary-800 rounded-xl p-7 border border-primary-600/30 shadow-md relative overflow-hidden group" style="--addon-delay: 0s">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-300"></div>
+            <h3 class="font-heading text-lg font-bold text-white mb-2">Nail Care</h3>
+            <p class="text-primary-200 text-sm leading-relaxed">Overgrown nails can cause pain, affect your dog's posture, and even lead to joint problems over time. We offer both nail trimming and Dremel grinding for a smooth, comfortable finish. Grinding is especially helpful for dogs with dark nails where the quick is hard to see, and for pets who are sensitive to the pressure of clippers. We go slow and steady. Most dogs barely notice.</p>
+            <p class="text-sm font-bold text-gold-300 mt-4">From $15</p>
           </div>
-          <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-warm-200/60 hover:shadow-md hover:-translate-y-0.5 transition-all">
-            <h3 class="font-heading text-lg font-bold text-gray-900 mb-2">Teeth Brushing</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Add-on dental care to keep your pet's teeth clean and breath fresh between veterinary cleanings.</p>
+          <div class="addon-card bg-primary-800 rounded-xl p-7 border border-primary-600/30 shadow-md relative overflow-hidden group" style="--addon-delay: 0.15s">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-300"></div>
+            <h3 class="font-heading text-lg font-bold text-white mb-2">Teeth Brushing</h3>
+            <p class="text-primary-200 text-sm leading-relaxed">Dental disease is one of the most common health issues in dogs, and it starts with plaque buildup. Our teeth brushing add-on uses pet-safe enzymatic toothpaste to remove surface buildup, freshen breath, and support gum health between veterinary dental cleanings. It's a quick step that makes a big difference, especially for smaller breeds prone to dental problems like Yorkies, Chihuahuas, and Dachshunds.</p>
+            <p class="text-sm font-bold text-gold-300 mt-4">From $10</p>
           </div>
-          <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-warm-200/60 hover:shadow-md hover:-translate-y-0.5 transition-all">
-            <h3 class="font-heading text-lg font-bold text-gray-900 mb-2">Ear & Gland Care</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Thorough ear cleaning and anal gland expression by experienced professionals with a gentle touch.</p>
+          <div class="addon-card bg-primary-800 rounded-xl p-7 border border-primary-600/30 shadow-md relative overflow-hidden group" style="--addon-delay: 0.3s">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-300"></div>
+            <h3 class="font-heading text-lg font-bold text-white mb-2">Ear & Gland Care</h3>
+            <p class="text-primary-200 text-sm leading-relaxed">Ear infections and impacted anal glands are uncomfortable for your pet and easy to miss at home. Our groomers gently clean ears to remove wax and debris that can lead to infection, especially important for floppy-eared breeds like Cocker Spaniels and Basset Hounds. Anal gland expression is done externally by experienced hands, relieving discomfort and preventing the scooting and odor that comes with full glands.</p>
+            <p class="text-sm font-bold text-gold-300 mt-4">From $10 each</p>
           </div>
         </div>
       </div>
 
-      <!-- ========== CAT GROOMING — Featured dark card ========== -->
+      <!-- ========== CAT GROOMING — Split layout with image ========== -->
       <div class="mt-10 sm:mt-14 reveal">
-        <div class="bg-gradient-to-r from-primary-700 to-primary-800 rounded-2xl p-8 sm:p-10 shadow-lg text-white">
-          <div class="max-w-3xl mx-auto text-center">
-            <span class="text-gold-300 font-body text-xs font-semibold uppercase tracking-[0.2em]">Yes, We Groom Cats Too</span>
-            <h3 class="font-heading text-2xl sm:text-3xl font-bold mt-2 mb-4 tracking-tight">Cat Grooming</h3>
-            <p class="text-primary-100 leading-relaxed text-lg">Full baths, lion cuts, sanitary trims, nail care, and de-matting for your feline friends. Our experienced team handles even the feistiest kitties with patience and care.</p>
+        <div class="bg-gradient-to-br from-gold-100 via-warm-100 to-gold-50 rounded-2xl shadow-xl overflow-hidden border border-gold-200/60">
+          <div class="grid lg:grid-cols-2 gap-0">
+            <!-- Cat image -->
+            <div class="aspect-[4/3] lg:aspect-auto overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1615497001839-b0a0eac3274c?w=800&q=80" alt="Cat being professionally groomed at A Passion For Pets salon in Gilbert AZ" class="w-full h-full object-cover photo-warm absolute inset-0" loading="lazy">
+              <div class="absolute inset-0 bg-gradient-to-r from-transparent to-gold-100/30 lg:block hidden"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-gold-100/40 to-transparent lg:hidden"></div>
+            </div>
+            <!-- Cat grooming text -->
+            <div class="p-5 sm:p-6 lg:py-6 lg:px-8">
+              <span class="inline-flex items-center gap-1.5 text-gold-600 font-body text-xs font-semibold uppercase tracking-[0.2em] bg-gold-300/20 px-3 py-1 rounded-md mb-2">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                Yes, We Groom Cats Too
+              </span>
+              <h3 class="font-heading text-xl sm:text-2xl font-bold text-gray-900 mt-1 mb-1.5 tracking-tight">Cat Grooming</h3>
+              <p class="text-gray-700 text-sm leading-snug mb-1.5">Finding a groomer who works with cats is hard. Most salons won't touch them. At A Passion For Pets, we've been grooming cats since 2007 and our team knows how to handle even the most anxious or feisty felines with calm, confident care.</p>
+              <p class="text-gray-700 text-sm leading-snug mb-1.5">Every cat session is done at a pace your cat can tolerate with no rushing and no stress. If your cat has severely matted fur, we'll work through it gently or recommend a lion cut to give them a fresh, comfortable start.</p>
+              <p class="text-sm font-semibold text-gold-600 mb-1.5">Starting at $75 · Varies by coat length & temperament</p>
+              <ul class="space-y-1 text-gray-600 text-xs">
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Full cat baths & blow-dry</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Lion cuts & sanitary trims</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Comb-outs & de-matting</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Nail trimming for cats</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-gold-300 rounded-full shrink-0"></span>Long-hair breeds: Persians, Maine Coons & more</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -762,8 +1085,10 @@
       <!-- CTA under services -->
       <div class="text-center mt-12 fade-in">
         <p class="text-gray-500 mb-4">Not sure what your pet needs? We'll help you choose the right service.</p>
-        <a href="tel:+14809261424" class="btn-shimmer inline-flex items-center gap-2 bg-gold-300 hover:bg-gold-200 text-primary-900 px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-          Call to Discuss — (480) 926-1424
+        <a href="tel:+14809261424" class="btn-glow inline-flex items-center gap-2.5 bg-gold-300 hover:bg-gold-200 text-primary-900 px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-400 shadow-lg border border-gold-200/30">
+          <div class="btn-sparkles"><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span></div>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          Call to Discuss - (480) 926-1424
         </a>
       </div>
     </div>
@@ -802,7 +1127,7 @@
         <div class="gallery-item">
           <img
             src="images/white-fluffy-dog-holiday-bow.webp"
-            alt="Adorable white fluffy dog with holiday bow after grooming at A Passion For Pets Gilbert"
+            alt="Adorable white fluffy dog with holiday bow after professional grooming at A Passion For Pets dog grooming salon in Gilbert AZ"
             class="photo-warm"
             loading="lazy"
           >
@@ -811,7 +1136,7 @@
         <div class="gallery-item">
           <img
             src="images/schnauzer-fresh-cut.webp"
-            alt="Schnauzer with a fresh clean cut after professional grooming at A Passion For Pets"
+            alt="Schnauzer with a fresh breed-specific haircut after professional dog grooming at A Passion For Pets Gilbert AZ"
             class="photo-warm"
             loading="lazy"
           >
@@ -820,7 +1145,7 @@
         <div class="gallery-item">
           <img
             src="images/golden-retriever-bows-groomed.jpg"
-            alt="Golden retriever with bows after grooming at A Passion For Pets Gilbert"
+            alt="Golden retriever with decorative bows after breed-specific grooming at A Passion For Pets dog salon in Gilbert AZ"
             class="photo-warm"
             loading="lazy"
           >
@@ -838,7 +1163,7 @@
         <div class="gallery-item">
           <img
             src="images/goldendoodle-red-collar-grooming.webp"
-            alt="Goldendoodle on the grooming table with red collar at A Passion For Pets salon"
+            alt="Goldendoodle with red collar on the grooming table at A Passion For Pets professional dog grooming in Gilbert AZ"
             class="photo-warm"
             loading="lazy"
           >
@@ -847,14 +1172,14 @@
         <div class="gallery-item">
           <img
             src="images/husky-towel-bath-day.jpg"
-            alt="Happy husky wrapped in a towel after bath day at A Passion For Pets Gilbert"
+            alt="Happy husky wrapped in a towel after bath day at A Passion For Pets dog grooming salon in Gilbert AZ"
             class="photo-warm"
             loading="lazy"
           >
         </div>
       </div>
 
-      <p class="text-center text-primary-300 text-sm mt-6 fade-in">Photos of real groomed pups — your pet could be next!</p>
+      <p class="text-center text-primary-300 text-sm mt-6 fade-in">Photos of real groomed pups. Your pet could be next!</p>
     </div>
 
     <!-- Wave divider: dark gallery → warm about -->
@@ -882,7 +1207,7 @@
           <div class="bg-white rounded-2xl shadow-xl overflow-hidden photo-zoom">
             <img
               src="images/grooming-team-gilbert.webp"
-              alt="The A Passion For Pets grooming team in Gilbert, Arizona"
+              alt="The experienced pet grooming team at A Passion For Pets salon in Gilbert AZ with over 15 years of combined experience"
               class="w-full aspect-[4/3] object-cover photo-warm"
               loading="lazy"
             >
@@ -897,7 +1222,7 @@
 
           <div class="space-y-4 text-gray-600 text-lg leading-relaxed">
             <p>
-              A Passion For Pets isn't just a name — it's our promise. Founded in 2007, our salon in the Village Center Shopping Center has been Gilbert's go-to grooming destination for nearly two decades.
+              A Passion For Pets isn't just a name. It's our promise. Founded in 2007, our salon in the Village Center Shopping Center has been Gilbert's go-to grooming destination for nearly two decades.
             </p>
             <p>
               Our team of 6 experienced groomers each bring 15 to 30 years of hands-on experience. Led by Shelly, who customers call "a true artist," we specialize in breed-specific styling and work with patience and compassion on every pet that walks through our door.
@@ -925,43 +1250,6 @@
         </div>
       </div>
 
-      <!-- Meet Our Groomers -->
-      <div class="mt-16 sm:mt-20 fade-in">
-        <h3 class="font-heading text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10 tracking-tight">Meet Our <em class="font-script not-italic">Groomers</em></h3>
-        <div class="grid sm:grid-cols-3 gap-6">
-
-          <!-- Groomer: Shelly -->
-          <div class="bg-white rounded-2xl p-6 text-center shadow-md border border-primary-100/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-9 h-9 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
-            </div>
-            <h4 class="font-heading text-lg font-bold text-gray-900">Shelly</h4>
-            <p class="text-primary-600 text-sm font-medium mb-3">Lead Groomer · 25+ Years</p>
-            <p class="text-gray-500 text-sm leading-relaxed">"A true artist" — customers rave about Shelly's breed-specific cuts and attention to detail.</p>
-          </div>
-
-          <!-- Groomer: Holly -->
-          <div class="bg-white rounded-2xl p-6 text-center shadow-md border border-primary-100/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-20 h-20 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-9 h-9 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
-            </div>
-            <h4 class="font-heading text-lg font-bold text-gray-900">Holly</h4>
-            <p class="text-primary-600 text-sm font-medium mb-3">Senior Groomer · 20+ Years</p>
-            <p class="text-gray-500 text-sm leading-relaxed">"I won't take my dogs anywhere else! My dogs love Holly." Gentle, patient, and loved by pets and parents alike.</p>
-          </div>
-
-          <!-- Groomer: Angie -->
-          <div class="bg-white rounded-2xl p-6 text-center shadow-md border border-primary-100/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-9 h-9 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            </div>
-            <h4 class="font-heading text-lg font-bold text-gray-900">Angie</h4>
-            <p class="text-primary-600 text-sm font-medium mb-3">Senior Groomer · 15+ Years</p>
-            <p class="text-gray-500 text-sm leading-relaxed">Specializing in anxious and nervous pets, Angie has a calming touch that puts even the most skittish pups at ease.</p>
-          </div>
-        </div>
-        <p class="text-center text-gray-400 text-sm mt-6">+ 3 more experienced groomers on our team</p>
-      </div>
     </div>
 
     <!-- Wave divider: about (warm) → reviews (primary-50 gradient) -->
@@ -974,15 +1262,15 @@
 
 
   <!-- ============================================ -->
-  <!-- REVIEWS / TESTIMONIALS SECTION -->
-  <!-- Social proof — real reviews from Google -->
+  <!-- REVIEWS / TESTIMONIALS CAROUSEL -->
+  <!-- Social proof — real reviews from Google — dual-row auto-scrolling -->
   <!-- ============================================ -->
   <section id="reviews" class="bg-gradient-to-b from-primary-50 to-warm-50 py-16 sm:py-24 relative overflow-hidden">
     <div class="gradient-orb bg-primary-200 w-80 h-80 top-0 right-0 absolute"></div>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
 
-      <!-- Section Header -->
-      <div class="text-center mb-12 sm:mb-16 fade-in">
+    <!-- Section Header -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+      <div class="text-center mb-10 sm:mb-14 fade-in">
         <span class="text-gold-400 font-body font-semibold text-sm uppercase tracking-[0.2em]">Reviews</span>
         <div class="section-accent mt-3"></div>
         <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mt-2 mb-4 tracking-tight">What Pet Parents Say</h2>
@@ -991,80 +1279,168 @@
           <span class="text-gray-600 font-medium">4.7 out of 5 · 177+ Reviews</span>
         </div>
       </div>
+    </div>
 
-      <!-- Reviews Grid -->
-      <div class="grid md:grid-cols-3 gap-6 sm:gap-8 fade-in">
-
-        <!-- Review 1 -->
-        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-primary-100/30 shadow-md hover:shadow-lg transition-shadow relative">
-          <!-- Decorative quote mark -->
-          <span class="absolute top-5 right-6 text-5xl font-heading text-primary-100 leading-none select-none">"</span>
-          <div class="flex text-yellow-400 text-sm mb-4">★★★★★</div>
-          <p class="text-gray-800 leading-relaxed mb-6 italic">"Shelly and the entire team is great! They always take such good care of our two golden retrievers. Wouldn't trust anyone else with our pups."</p>
-          <div class="flex items-center justify-between mt-auto">
+    <!-- Carousel Row 1 — scrolls left -->
+    <div class="review-carousel-track" data-direction="left" data-speed="35">
+      <div class="review-carousel-inner">
+        <!-- Card 1 -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"Shelly and the entire team is great! They always take such good care of our two golden retrievers. Wouldn't trust anyone else with our pups."</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm shrink-0">D</div>
             <div>
-              <p class="font-semibold text-gray-900 text-sm">Dylan C.</p>
-              <p class="text-xs text-gray-500 flex items-center gap-1">
-                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-                Gilbert, AZ
-              </p>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Dylan C.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
             </div>
-            <div class="flex items-center gap-1.5 text-xs text-gray-400">
-              <svg class="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-              Google
-            </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
           </div>
         </div>
-
-        <!-- Review 2 -->
-        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-primary-100/30 shadow-md hover:shadow-lg transition-shadow relative">
-          <span class="absolute top-5 right-6 text-5xl font-heading text-primary-100 leading-none select-none">"</span>
-          <div class="flex text-yellow-400 text-sm mb-4">★★★★★</div>
-          <p class="text-gray-800 leading-relaxed mb-6 italic">"I can't say enough good things about this place. The staff is so friendly, and the atmosphere is so homey. My dog actually gets excited when we pull into the parking lot!"</p>
-          <div class="flex items-center justify-between mt-auto">
+        <!-- Card 2 -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"I can't say enough good things about this place. The staff is so friendly, and the atmosphere is so homey. My dog actually gets excited when we pull into the parking lot!"</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-gold-100 flex items-center justify-center text-gold-700 font-bold text-sm shrink-0">E</div>
             <div>
-              <p class="font-semibold text-gray-900 text-sm">Elizabeth E.</p>
-              <p class="text-xs text-gray-500 flex items-center gap-1">
-                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-                Gilbert, AZ
-              </p>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Elizabeth E.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
             </div>
-            <div class="flex items-center gap-1.5 text-xs text-gray-400">
-              <svg class="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-              Google
-            </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
           </div>
         </div>
-
-        <!-- Review 3 -->
-        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-primary-100/30 shadow-md hover:shadow-lg transition-shadow relative">
-          <span class="absolute top-5 right-6 text-5xl font-heading text-primary-100 leading-none select-none">"</span>
-          <div class="flex text-yellow-400 text-sm mb-4">★★★★★</div>
-          <p class="text-gray-800 leading-relaxed mb-6 italic">"We've been taking our dog to Shelly for years. She truly is an artist when it comes to grooming. Our pup always comes home looking and smelling amazing."</p>
-          <div class="flex items-center justify-between mt-auto">
+        <!-- Card 3 -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"We've been taking our dog to Shelly for years. She truly is an artist when it comes to grooming. Our pup always comes home looking and smelling amazing."</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-accent-100 flex items-center justify-center text-accent-700 font-bold text-sm shrink-0">K</div>
             <div>
-              <p class="font-semibold text-gray-900 text-sm">Kent B.</p>
-              <p class="text-xs text-gray-500 flex items-center gap-1">
-                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-                Gilbert, AZ
-              </p>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Kent B.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
             </div>
-            <div class="flex items-center gap-1.5 text-xs text-gray-400">
-              <svg class="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-              Google
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+        </div>
+        <!-- Card 4 — Real review -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"Both my fur babies see Shelly and she is phenomenal!! I have a temperamental Shih Tzu that hates being groomed but Shelly manages to make her look beautiful every time."</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-warm-200 flex items-center justify-center text-warm-800 font-bold text-sm shrink-0">V</div>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Vanessa H.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
             </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+        </div>
+        <!-- Card 5 — Real review -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"Calm, professional, caring people and a great price! They handled our angry chihuahua like real pros and true dog lovers."</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm shrink-0">D</div>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Dee W.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
+            </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Google Reviews CTA Button -->
-      <div class="text-center mt-10 fade-in">
-        <a href="https://www.google.com/maps/place/A+Passion+For+Pets/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2.5 bg-primary-800 hover:bg-primary-700 text-white px-8 py-4 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-          <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-          Read All 177+ Reviews on Google
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-        </a>
+    <!-- Carousel Row 2 — scrolls right -->
+    <div class="review-carousel-track mt-5" data-direction="right" data-speed="40">
+      <div class="review-carousel-inner">
+        <!-- Card 6 — Real review -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"I won't take my dogs anywhere else! My dogs love Holly and she takes such great care of them."</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-gold-100 flex items-center justify-center text-gold-700 font-bold text-sm shrink-0">A</div>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Amy W.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
+            </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+        </div>
+        <!-- Card 7 — Real review -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"Hands-down my favorite groomers. I love that Angie loves my dogs like her own."</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-accent-100 flex items-center justify-center text-accent-700 font-bold text-sm shrink-0">D</div>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Dawn R.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
+            </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+        </div>
+        <!-- Card 8 — Real review -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"We have been using A Passion for Pets for 14+ years. The staff is amazing and truly cares about the animals they service."</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm shrink-0">T</div>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Troy H.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
+            </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+        </div>
+        <!-- Card 9 — Real review -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"Holly was our greeter and groomer. I was so hesitant to take our pup anywhere and it was long overdue for our dog to get pampered. Holly was amazing!"</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-warm-200 flex items-center justify-center text-warm-800 font-bold text-sm shrink-0">M</div>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Mina O.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
+            </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+        </div>
+        <!-- Card 10 — Real review -->
+        <div class="review-card">
+          <span class="absolute top-4 right-5 text-4xl font-heading text-primary-100/50 leading-none select-none">"</span>
+          <div class="flex text-yellow-400 text-xs mb-3">★★★★★</div>
+          <p class="text-gray-700 text-sm leading-relaxed mb-4">"My pup looked wonderful after his first ever visit to Shelly."</p>
+          <div class="flex items-center gap-3 mt-auto">
+            <div class="w-9 h-9 rounded-full bg-gold-100 flex items-center justify-center text-gold-700 font-bold text-sm shrink-0">D</div>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm leading-tight">Dennis C.</p>
+              <p class="text-xs text-gray-400">Gilbert, AZ</p>
+            </div>
+            <svg class="w-4 h-4 ml-auto shrink-0" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- Google Reviews CTA Button -->
+    <div class="text-center mt-10 relative z-10 fade-in">
+      <a href="https://www.google.com/maps/place/A+Passion+For+Pets/@33.352,-111.789,17z/data=!4m8!3m7!1s0x872ba918fcb0c663:0xb1e254a71609b6a0!8m2!3d33.352!4d-111.789!9m1!1b1!16s" target="_blank" rel="noopener noreferrer" class="btn-glow btn-glow-dark inline-flex items-center gap-2.5 bg-primary-800 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-400 shadow-lg border border-primary-600/30">
+        <div class="btn-sparkles"><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span></div>
+        <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Read All 177+ Reviews on Google
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      </a>
     </div>
   </section>
 
@@ -1074,207 +1450,186 @@
   <!-- Full-width dark image with owner quote overlay -->
   <!-- ============================================ -->
   <section class="photo-break parallax-bg" style="background-image: url('images/hero-option-puppy.jpg');">
-    <div class="photo-break-overlay" style="background: linear-gradient(135deg, rgba(35, 61, 72, 0.75), rgba(43, 60, 51, 0.65));"></div>
+    <div class="photo-break-overlay" style="background: linear-gradient(135deg, rgba(35, 61, 72, 0.82), rgba(30, 52, 62, 0.75));"></div>
     <div class="photo-break-content fade-in">
-      <div class="pb-line"></div>
       <blockquote>
         "Every pet that walks through our door becomes part of our family."
       </blockquote>
-      <p class="quote-attr">— The A Passion For Pets Team, Serving Gilbert Since 2007</p>
+      <p class="quote-attr">- The A Passion For Pets Team, Serving Gilbert Since 2007</p>
     </div>
   </section>
 
 
   <!-- ============================================ -->
-  <!-- AREAS WE SERVE -->
-  <!-- Important for local SEO — tells Google where -->
+  <!-- UNIFIED CONTACT + SERVICE AREA SECTION -->
+  <!-- Stacked editorial: form, info, map, cities -->
   <!-- ============================================ -->
-  <section class="bg-primary-800 py-12 sm:py-16 relative pb-20 sm:pb-24">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center fade-in">
-      <h2 class="font-heading text-2xl sm:text-3xl font-bold text-white mb-4">Proudly Serving Gilbert & Surrounding Areas</h2>
-      <p class="text-primary-200 mb-6 text-lg">Conveniently located in the Village Center Shopping Center</p>
-      <div class="flex flex-wrap justify-center gap-3 text-sm">
-        <span class="bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-full">Gilbert</span>
-        <span class="bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-full">Mesa</span>
-        <span class="bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-full">Chandler</span>
-        <span class="bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-full">Queen Creek</span>
-        <span class="bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-full">San Tan Valley</span>
-        <span class="bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-full">Tempe</span>
-        <span class="bg-white/15 backdrop-blur-sm text-white px-4 py-2 rounded-full">Scottsdale</span>
-      </div>
-    </div>
+  <section id="contact" class="bg-primary-900 relative overflow-hidden">
+    <!-- Subtle radial glow accents -->
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-[0.06]" style="background: radial-gradient(circle, #d4a96e 0%, transparent 70%);"></div>
+    <div class="absolute bottom-40 left-0 w-[400px] h-[400px] rounded-full opacity-[0.04]" style="background: radial-gradient(circle, #4a8699 0%, transparent 70%);"></div>
+    <!-- Paw print watermarks -->
+    <div class="paw-scatter" data-count="30" data-color="#3a5563"></div>
 
-    <!-- Wave divider: primary-800 (dark blue) → contact (warm-50 cream) -->
-    <div class="wave-divider">
-      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-        <path d="M0,40 C300,100 600,0 900,60 C1050,90 1150,30 1200,50 L1200,120 L0,120 Z" fill="#fdfaf6"></path>
-      </svg>
-    </div>
-  </section>
-
-
-  <!-- ============================================ -->
-  <!-- CONTACT SECTION -->
-  <!-- Address, hours, phone, map, contact form -->
-  <!-- ============================================ -->
-  <section id="contact" class="bg-warm-50 py-16 sm:py-24 relative overflow-hidden pb-24 sm:pb-32">
-    <div class="gradient-orb bg-accent-200 w-72 h-72 bottom-20 right-0 absolute"></div>
-    <div class="paw-scatter" data-count="35" data-color="#4a8699"></div>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+    <!-- TIER 1: Contact Hub -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-12 sm:pb-16 relative z-10">
 
       <!-- Section Header -->
       <div class="text-center mb-12 sm:mb-16 fade-in">
-        <span class="text-gold-400 font-body font-semibold text-sm uppercase tracking-[0.2em]">Contact Us</span>
-        <div class="section-accent mt-3"></div>
-        <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mt-2 mb-4 tracking-tight">Book Your Pet's <em class="font-heading italic">Appointment</em></h2>
-        <p class="text-gray-600 max-w-2xl mx-auto text-lg">Give us a call to schedule or stop by the salon. We'd love to meet your furry friend!</p>
+        <span class="text-gold-300 font-body font-semibold text-sm uppercase tracking-[0.2em]">Get In Touch</span>
+        <div class="w-12 h-0.5 bg-gold-400 mx-auto mt-3"></div>
+        <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-4 mb-4 tracking-tight">Book Your Pet's <em class="font-heading italic text-gold-300">Appointment</em></h2>
+        <p class="text-primary-200 max-w-2xl mx-auto text-lg">Give us a call to schedule or stop by the salon. We'd love to meet your furry friend!</p>
       </div>
 
       <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
 
-        <!-- Left: Contact Info + Map -->
-        <div class="space-y-6 fade-in">
+        <!-- Left: Contact Form -->
+        <div class="fade-in order-2 lg:order-1">
+          <div class="bg-white/[0.06] backdrop-blur-sm rounded-2xl border border-white/10 p-6 sm:p-8">
+            <h3 class="font-heading text-xl font-bold text-white mb-2">Send Us a Message</h3>
+            <p class="text-primary-300 text-sm mb-6">Have a question? Fill out the form and we'll get back to you.</p>
 
-          <!-- Contact Cards -->
-          <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8 space-y-6">
-
-            <!-- Phone -->
-            <div class="flex items-start gap-4">
-              <div class="bg-accent-100 rounded-xl p-3 shrink-0">
-                <svg class="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            <form id="contact-form" class="space-y-4">
+              <div>
+                <label for="name" class="block text-sm font-medium text-primary-200 mb-1">Your Name</label>
+                <input type="text" id="name" name="name" required placeholder="Jane Smith"
+                  class="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/15 text-white placeholder-white/40 focus:border-gold-400 focus:ring-2 focus:ring-gold-400/20 outline-none transition-all">
               </div>
               <div>
-                <p class="font-semibold text-gray-900">Phone</p>
-                <a href="tel:+14809261424" class="text-accent-600 hover:text-accent-700 text-lg font-medium">(480) 926-1424</a>
+                <label for="phone" class="block text-sm font-medium text-primary-200 mb-1">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="(480) 555-1234"
+                  class="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/15 text-white placeholder-white/40 focus:border-gold-400 focus:ring-2 focus:ring-gold-400/20 outline-none transition-all">
               </div>
-            </div>
-
-            <!-- Address -->
-            <div class="flex items-start gap-4">
-              <div class="bg-accent-100 rounded-xl p-3 shrink-0">
-                <svg class="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              </div>
-              <div>
-                <p class="font-semibold text-gray-900">Address</p>
-                <p class="text-gray-600">675 N Gilbert Rd, Ste 150</p>
-                <p class="text-gray-600">Gilbert, AZ 85234</p>
-                <p class="text-sm text-gray-500 mt-1">Village Center Shopping Center</p>
-              </div>
-            </div>
-
-            <!-- Hours -->
-            <div class="flex items-start gap-4">
-              <div class="bg-accent-100 rounded-xl p-3 shrink-0">
-                <svg class="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </div>
-              <div>
-                <p class="font-semibold text-gray-900">Hours</p>
-                <div class="text-gray-600 text-sm space-y-1 mt-1">
-                  <p class="flex justify-between gap-8"><span>Tuesday – Saturday</span> <span class="font-medium">7:00 AM – 5:00 PM</span></p>
-                  <p class="flex justify-between gap-8"><span>Sunday – Monday</span> <span class="font-medium text-red-500">Closed</span></p>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="email" class="block text-sm font-medium text-primary-200 mb-1">Email Address</label>
+                  <input type="email" id="email" name="email" placeholder="jane@email.com"
+                    class="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/15 text-white placeholder-white/40 focus:border-gold-400 focus:ring-2 focus:ring-gold-400/20 outline-none transition-all">
+                </div>
+                <div>
+                  <label for="pet-info" class="block text-sm font-medium text-primary-200 mb-1">Pet's Name & Breed</label>
+                  <input type="text" id="pet-info" name="pet-info" placeholder="Buddy - Golden Retriever"
+                    class="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/15 text-white placeholder-white/40 focus:border-gold-400 focus:ring-2 focus:ring-gold-400/20 outline-none transition-all">
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- Google Map -->
-          <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3330.5!2d-111.789!3d33.352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ba918fcb0c663%3A0xb1e254a71609b6a0!2sA%20Passion%20For%20Pets!5e0!3m2!1sen!2sus!4v1"
-              width="100%"
-              height="280"
-              style="border:0;"
-              allowfullscreen=""
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              title="A Passion For Pets location on Google Maps"
-            ></iframe>
+              <div>
+                <label for="message" class="block text-sm font-medium text-primary-200 mb-1">Message</label>
+                <textarea id="message" name="message" rows="3" placeholder="Tell us about your pet or what service you're looking for..."
+                  class="w-full px-4 py-3 rounded-lg bg-white/[0.08] border border-white/15 text-white placeholder-white/40 focus:border-gold-400 focus:ring-2 focus:ring-gold-400/20 outline-none transition-all resize-none"></textarea>
+              </div>
+              <button type="submit"
+                class="btn-glow w-full bg-gold-300 hover:bg-gold-200 text-primary-900 py-4 rounded-lg font-semibold text-lg transition-all duration-400 shadow-lg border border-gold-200/30">
+                <div class="btn-sparkles"><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span><span class="btn-sparkle"></span></div>
+                Schedule Now
+              </button>
+              <p class="text-xs text-primary-400 text-center">We typically respond within a few hours during business hours.</p>
+            </form>
           </div>
         </div>
 
-        <!-- Right: Contact Form -->
-        <div class="fade-in">
-          <div class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
-            <h3 class="font-heading text-xl font-bold text-gray-900 mb-2">Send Us a Message</h3>
-            <p class="text-gray-500 text-sm mb-6">Have a question? Fill out the form and we'll get back to you.</p>
+        <!-- Right: Contact Info -->
+        <div class="fade-in order-1 lg:order-2 flex flex-col">
 
-            <form id="contact-form" class="space-y-4">
-              <!-- Name -->
-              <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  placeholder="Jane Smith"
-                  class="w-full px-4 py-3 rounded-xl border border-warm-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-200 outline-none transition-all bg-warm-50"
-                >
+          <!-- Phone - Hero Scale -->
+          <div class="mb-6">
+            <p class="text-primary-300 text-sm font-semibold uppercase tracking-wider mb-2">Call to Book</p>
+            <a href="tel:+14809261424" class="inline-flex items-center gap-3 group">
+              <div class="bg-gold-300/15 rounded-xl p-3 group-hover:bg-gold-300/25 transition-colors">
+                <svg class="w-7 h-7 text-gold-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
               </div>
-
-              <!-- Phone -->
-              <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  placeholder="(480) 555-1234"
-                  class="w-full px-4 py-3 rounded-xl border border-warm-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-200 outline-none transition-all bg-warm-50"
-                >
-              </div>
-
-              <!-- Email -->
-              <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="jane@email.com"
-                  class="w-full px-4 py-3 rounded-xl border border-warm-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-200 outline-none transition-all bg-warm-50"
-                >
-              </div>
-
-              <!-- Pet Info -->
-              <div>
-                <label for="pet-info" class="block text-sm font-medium text-gray-700 mb-1">Pet's Name & Breed</label>
-                <input
-                  type="text"
-                  id="pet-info"
-                  name="pet-info"
-                  placeholder="Buddy — Golden Retriever"
-                  class="w-full px-4 py-3 rounded-xl border border-warm-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-200 outline-none transition-all bg-warm-50"
-                >
-              </div>
-
-              <!-- Message -->
-              <div>
-                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="4"
-                  placeholder="Tell us about your pet or what service you're looking for..."
-                  class="w-full px-4 py-3 rounded-xl border border-warm-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-200 outline-none transition-all bg-warm-50 resize-none"
-                ></textarea>
-              </div>
-
-              <!-- Submit -->
-              <button
-                type="submit"
-                class="btn-shimmer w-full bg-gold-300 hover:bg-gold-200 text-primary-900 py-4 rounded-full font-semibold text-lg transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
-              >
-                Send Message
-              </button>
-              <p class="text-xs text-gray-400 text-center">We typically respond within a few hours during business hours.</p>
-            </form>
+              <span class="font-heading text-2xl sm:text-3xl font-bold text-gold-300 group-hover:text-gold-200 transition-colors">(480) 926-1424</span>
+            </a>
           </div>
+
+          <!-- Address -->
+          <div class="flex items-start gap-4 mb-4">
+            <div class="bg-white/10 rounded-xl p-3 shrink-0">
+              <svg class="w-5 h-5 text-primary-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <div>
+              <p class="font-semibold text-white">Visit Our Salon</p>
+              <p class="text-primary-200">675 N Gilbert Rd, Ste 150</p>
+              <p class="text-primary-200">Gilbert, AZ 85234</p>
+              <p class="text-sm text-primary-400 mt-1">Village Center Shopping Center</p>
+            </div>
+          </div>
+
+          <!-- Hours -->
+          <div class="flex items-start gap-4 mb-5">
+            <div class="bg-white/10 rounded-xl p-3 shrink-0">
+              <svg class="w-5 h-5 text-primary-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+              <p class="font-semibold text-white">Salon Hours</p>
+              <div class="text-primary-200 text-sm space-y-1 mt-1">
+                <p class="flex justify-between gap-8"><span>Tuesday - Saturday</span> <span class="font-medium text-white">7:00 AM - 5:00 PM</span></p>
+                <p class="flex justify-between gap-8"><span>Sunday - Monday</span> <span class="font-medium text-red-400">Closed</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Google Rating Badge -->
+          <div class="bg-white/[0.06] backdrop-blur-sm rounded-xl border border-white/10 p-4 flex items-center gap-4 mb-5">
+            <div class="text-center shrink-0">
+              <div class="text-2xl font-bold text-white">4.7</div>
+              <div class="flex gap-0.5 text-gold-300">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              </div>
+            </div>
+            <div class="border-l border-white/10 pl-4">
+              <p class="text-white text-sm font-medium">Rated on Google</p>
+              <p class="text-primary-400 text-xs">177+ five-star reviews</p>
+            </div>
+          </div>
+
+          <!-- Grooming Photo -->
+          <div class="hidden lg:block rounded-xl overflow-hidden border border-white/10 shadow-lg">
+            <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80" alt="Happy dog after professional grooming at A Passion For Pets in Gilbert AZ" class="w-full h-48 object-cover photo-warm">
+          </div>
+
         </div>
       </div>
     </div>
 
-    <!-- Wave divider: contact (warm-50) → FAQ (warm-100) -->
+    <!-- TIER 2: Map Strip -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-10 sm:pb-14 relative z-10">
+      <div class="rounded-2xl overflow-hidden shadow-2xl border border-white/10" style="filter: brightness(0.85) contrast(1.1);">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3330.5!2d-111.789!3d33.352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872ba918fcb0c663%3A0xb1e254a71609b6a0!2sA%20Passion%20For%20Pets!5e0!3m2!1sen!2sus!4v1"
+          width="100%"
+          height="300"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="A Passion For Pets location on Google Maps"
+        ></iframe>
+      </div>
+      <div class="text-center mt-3">
+        <a href="https://maps.google.com/?q=A+Passion+For+Pets+675+N+Gilbert+Rd+Gilbert+AZ" target="_blank" rel="noopener" class="text-primary-300 hover:text-gold-300 text-sm inline-flex items-center gap-1 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          Open in Google Maps
+        </a>
+      </div>
+    </div>
+
+    <!-- TIER 3: Service Area Sign-off -->
+    <div class="border-t border-white/[0.07] relative z-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-8 sm:pt-10 pb-24 sm:pb-28 text-center">
+        <p class="text-primary-300 font-body font-semibold text-xs uppercase tracking-[0.25em] mb-4">Proudly Serving the East Valley</p>
+        <p class="text-primary-200/70 text-sm sm:text-base font-light tracking-wide">
+          Gilbert&ensp;&middot;&ensp;Mesa&ensp;&middot;&ensp;Chandler&ensp;&middot;&ensp;Queen Creek&ensp;&middot;&ensp;San Tan Valley&ensp;&middot;&ensp;Tempe&ensp;&middot;&ensp;Scottsdale
+        </p>
+        <p class="text-primary-400 text-xs mt-3">Not sure if we serve your area? <a href="tel:+14809261424" class="text-gold-300 hover:text-gold-200 transition-colors">Give us a call!</a></p>
+      </div>
+    </div>
+
+    <!-- Wave divider to FAQ -->
     <div class="wave-divider">
       <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path d="M0,60 C200,120 400,0 600,60 C800,120 1000,0 1200,60 L1200,120 L0,120 Z" fill="#f6f3ed"></path>
@@ -1616,6 +1971,28 @@
 
     document.querySelectorAll('.fade-in, .reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
 
+    // --- Dramatic service card slide-in ---
+    // Uses wrapper sentinels because translateX moves cards out of observer's detection range
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const card = entry.target.querySelector('.service-card-left, .service-card-right');
+          if (card) card.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.service-card-wrapper').forEach(el => cardObserver.observe(el));
+
+    // --- Add-on card staggered reveal ---
+    const addonObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.addon-card').forEach(el => addonObserver.observe(el));
+
     // --- Contact Form Handler ---
     // For now, just shows a success message. In production, this would
     // connect to a form service like Formspree, Netlify Forms, etc.
@@ -1714,6 +2091,19 @@
       }
 
       container.remove();
+    });
+  </script>
+
+  <!-- Review carousel: duplicate cards for seamless infinite loop -->
+  <script>
+    document.querySelectorAll('.review-carousel-track').forEach(track => {
+      const inner = track.querySelector('.review-carousel-inner');
+      const speed = track.dataset.speed || 35;
+      // Duplicate all cards for seamless loop
+      const cards = inner.innerHTML;
+      inner.innerHTML = cards + cards;
+      // Set animation speed
+      inner.style.animationDuration = speed + 's';
     });
   </script>
 
